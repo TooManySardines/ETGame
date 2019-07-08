@@ -3,13 +3,6 @@ import random
 import pygame as pg
 from box import *
 
-# def get_box(x, y, width, height, color, border_width=-1, border_color=(0, 0, 0)):
-#     surface = pg.Surface((width, height))
-#     surface.fill(color)
-#     pg.draw.rect(surface, border_color, pg.Rect(0, 0, width, height), border_width)
-#     rect = surface.get_rect(topleft=(x, y))
-#     return (surface, rect)
-
 def blit_all(surface, to_blit):
     for item in to_blit:
         surface.blit(item[0], item[1])
@@ -40,8 +33,10 @@ def run():
     enemy = Box(400, 100, 50, 50, (255, 0, 0))
     visible.append(enemy.get_box())
     #menu box
-    # menu = get_box(10, game_height-110, game_width-20, 100, (255, 255, 255), 20, (0, 0, 0))
-    # visible.append(menu)
+    menu = UIbox(["Testing1", "Testing2", "Testing3", "Testing4", "Testing5", "Testing6", "Testing7", "Testing8"], 10, game_height-110, game_width-20, 100, (255, 255, 255), 10, (100, 200, 100))
+    visible.append(menu.get_box())
+    selected = None
+
 
     while playing:
         screen.fill(bg_color)
@@ -51,40 +46,26 @@ def run():
             #quitting
             if event.type == pg.QUIT:
                 playing = False
-            #mouse input
             elif event.type == pg.MOUSEBUTTONDOWN:
-                #change player color
-                player.surface.fill((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
-            # #keyboard input
-            # elif event.type == pg.KEYDOWN:
-            #     #start player motion
-            #     if event.key == pg.K_w:
-            #         move_up = True
-            #     elif event.key == pg.K_s:
-            #         move_down = True
-            #     elif event.key == pg.K_a:
-            #         move_left = True
-            #     elif event.key == pg.K_d:
-            #         move_right = True
-            # elif event.type == pg.KEYUP:
-            #     #stop player motion
-            #     if event.key == pg.K_w:
-            #         move_up = False
-            #     elif event.key == pg.K_s:
-            #         move_down = False
-            #     elif event.key == pg.K_a:
-            #         move_left = False
-            #     elif event.key == pg.K_d:
-            #         move_right = False
+                selected = menu.get_clicked(event.pos)
+                if selected is not None:
+                    print(selected)
+                    selected.color = (255, 0, 0)
+                    menu.draw()
+            elif event.type == pg.MOUSEBUTTONUP:
+                if selected is not None:
+                    selected.color = (0, 0, 0)
+                    menu.draw()
 
-        menu = Box(10, game_height-110, game_width-20, 100, (255, 255, 255), 10, (100, 200, 100))
-        visible.append(menu.get_box())
-
+        #display all the things
         blit_all(screen, visible)
-
+        #update display
         pg.display.flip()
+
+
+    #when the game is finished, quit pygame.
     pg.quit()
     sys.exit()
 
-
+#run the game!
 run()
